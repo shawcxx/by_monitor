@@ -1,0 +1,81 @@
+package com.shawcxx.unpack;
+
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.shawcxx.common.constant.SysConstant;
+import com.shawcxx.common.util.MyHexUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+
+/**
+ * @author Chen jl
+ * @date 2022/6/14 22:31
+ * @description
+ **/
+@Service
+@Slf4j
+public class BaseUnpackService {
+
+
+    //68 0030 68 1006 90999121 00000000 02000010022300020034010B4D284505000BB4BA354038C73208000000000000A516
+    public String unpackV1(String data) {
+        if (StrUtil.isBlank(data)) {
+            return null;
+        }
+        String result = null;
+        try {
+            BaseUnpackBO baseUnpackBO = new BaseUnpackBO();
+            String returnData = null;
+            String protocol = MyHexUtil.getHex(data, 1, 1);
+            if (!"68".equals(protocol)) {
+                return null;
+            }
+            int dataLength = MyHexUtil.getHexInt(data, 2, 2);
+            if (dataLength * 2 != data.length()) {
+                return null;
+            }
+            String protocol2 = MyHexUtil.getHex(data, 4, 1);
+            String cmd = MyHexUtil.getHex(data, 5, 2);
+            String routeId = MyHexUtil.getHexIntStr(data, 7, 4);
+
+
+            //保留字段
+//            String reverse = MyHexUtil.getRouteId(data, 11, 4);
+
+            int contentLength = dataLength - 16;
+            String content = MyHexUtil.getHex(data, 15, contentLength);
+            String cs = MyHexUtil.getHex(data, 15 + contentLength, 1);
+            String end = MyHexUtil.getHex(data, 16 + contentLength, 1);
+            baseUnpackBO.setProtocol(protocol);
+            baseUnpackBO.setRouteId(routeId);
+            baseUnpackBO.setCmd(cmd);
+            baseUnpackBO.setContent(content);
+            baseUnpackBO.setCs(cs);
+            baseUnpackBO.setEnd(end);
+
+            Object bean = SpringUtil.getBean("v1Cmd" + cmd + "Service");
+            returnData = ReflectUtil.invoke(bean, "unpack", baseUnpackBO);
+
+            return returnData;
+        } catch (Exception e) {
+
+            log.warn("协议解析错误", e);
+        }
+        if (result != null) {
+            //todo 保存收到的数据和返回的数据
+        }
+        return result;
+
+
+    }
+
+    public static void main(String[] args) {
+        BaseUnpackService baseUnpackService = new BaseUnpackService();
+        baseUnpackService.unpackV1("680030681006909991210000000002000010022300020034010B4D284505000BB4BA354038C73208000000000000A516");
+    }
+}
+

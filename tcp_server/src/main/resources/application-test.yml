@@ -1,0 +1,17 @@
+tcp:
+  port: 40031
+
+spring:
+  datasource:
+    url: jdbc:mysql://47.98.202.59/electric_monitor?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=utf8&useSSL=true
+    username: root
+    password: 1012xiao
+  data:
+    mongodb:
+      host: 47.98.202.59
+      database: electric_monitor
+      username: admin
+      password: electricMonitor
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

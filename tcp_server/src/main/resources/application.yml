@@ -1,0 +1,15 @@
+#日志
+logging:
+  file:
+    path: log
+
+spring:
+  profiles:
+    active: test
+  application:
+    name: by_tcp
+  output:
+    ansi:
+      enabled: always
+  main:
+    allow-bean-definition-overriding: true
