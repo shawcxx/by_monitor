@@ -38,8 +38,8 @@ public class StationForm {
     /**
      * 装机容量
      */
-    @NotBlank(message = "装机容量不能为空")
-    private String stationCapacity;
+    @NotNull(message = "装机容量不能为空")
+    private Double stationCapacity;
 
     /**
      * 经度

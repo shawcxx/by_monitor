@@ -30,4 +30,25 @@
 
         </where>
     </select>
+    <select id="userDevice" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT count(device_type) total,count(device_type=1 or null) mi,count(device_type=2 or null) emu
+        FROM t_device td
+        LEFT JOIN t_station ts on td.station_id = ts.station_id
+        JOIN sys_dept sd ON ts.dept_id =
+        sd.dept_id LEFT JOIN
+        t_user_station tus ON
+        tus.station_id = ts.station_id AND
+        tus.user_id = #{user.userId}
+        <where>
+            1=1
+            AND
+            (
+            <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
+                find_in_set(#{deptId},sd.dept_tree)
+            </foreach>
+            OR ts.user_id = #{user.userId}
+            OR tus.id is not null
+            )
+        </where>
+    </select>
 </mapper>

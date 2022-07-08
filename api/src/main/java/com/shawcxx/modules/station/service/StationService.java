@@ -67,9 +67,11 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
         Page<StationDTO> page = baseMapper.stationList(new Page<>(form.getCurrent(), form.getSize()), form);
         for (StationDTO record : page.getRecords()) {
             record.setAlarmInfo(null);
-            record.setEnergy(deviceEnergyStatisticService.getStationDayEnergy(record.getStationId(), DateUtil.date()));
-            record.setPower(deviceRecordService.getStationLastPower(record.getStationId()));
-            record.setEnergyTrend(deviceEnergyStatisticService.energyData(record.getStationId(), 1, DateUtil.now(), DateUtil.now(), null));
+            if (form.getQueryData()) {
+                record.setEnergy(deviceEnergyStatisticService.getStationDayEnergy(record.getStationId(), DateUtil.date()));
+                record.setPower(deviceRecordService.getStationLastPower(record.getStationId()));
+                record.setEnergyTrend(deviceEnergyStatisticService.energyData(record.getStationId(), 1, DateUtil.now(), DateUtil.now(), null));
+            }
         }
         return page;
     }

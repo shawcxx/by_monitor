@@ -78,7 +78,7 @@ public class DeviceRecordService {
         return list;
     }
 
-    public Double getStationLastPower(String stationId) {
+    public double getStationLastPower(String stationId) {
         double r = 0.0;
         Criteria criteria = Criteria.where("stationId").is(stationId);
         criteria.and("deviceTime").gte(DateUtil.offsetMinute(DateUtil.date(), -30));
@@ -94,6 +94,24 @@ public class DeviceRecordService {
         }
         return r;
     }
+
+    public double getStationLastPower(List<String> stationList) {
+        double r = 0.0;
+        Criteria criteria = Criteria.where("stationId").in(stationList);
+        criteria.and("deviceTime").gte(DateUtil.offsetMinute(DateUtil.date(), -30));
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(criteria),
+                Aggregation.project("deviceNo", "deviceType", "power", "deviceTime"),
+                Aggregation.sort(Sort.Direction.DESC, "deviceTime"),
+                Aggregation.group("deviceNo", "deviceType").first("deviceTime").as("deviceTime").first("power").as("power")
+        );
+        AggregationResults<JSONObject> results = mongoTemplate.aggregate(aggregation, DeviceRecordDO.class, JSONObject.class);
+        if (CollUtil.isNotEmpty(results.getMappedResults())) {
+            r = results.getMappedResults().stream().mapToDouble(o -> o.getDoubleValue("power")).sum();
+        }
+        return r;
+    }
+
     public Double getDeviceLastPower(String deviceNo) {
         double r = 0.0;
         Criteria criteria = Criteria.where("deviceNo").is(deviceNo);

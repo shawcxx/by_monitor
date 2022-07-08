@@ -38,7 +38,7 @@ public class StationDO {
     /**
      * 装机容量
      */
-    private String stationCapacity;
+    private Double stationCapacity;
 
     /**
      * 经度
@@ -77,4 +77,5 @@ public class StationDO {
 
     private Long deptId;
 
+    private Integer inUse;
 }

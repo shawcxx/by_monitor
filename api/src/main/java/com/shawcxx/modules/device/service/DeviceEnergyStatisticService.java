@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.shawcxx.common.base.SysUserBO;
+import com.shawcxx.common.utils.MyUserUtil;
 import com.shawcxx.modules.device.dao.DeviceEnergyStatisticDAO;
 import com.shawcxx.modules.device.domain.DeviceEnergyStatisticDO;
 import org.springframework.stereotype.Service;
@@ -164,7 +166,7 @@ public class DeviceEnergyStatisticService extends ServiceImpl<DeviceEnergyStatis
                 }
                 break;
             default:
-                return null;
+                return list;
         }
 
         LambdaQueryWrapper<DeviceEnergyStatisticDO> queryWrapper = new LambdaQueryWrapper<>();
@@ -188,4 +190,56 @@ public class DeviceEnergyStatisticService extends ServiceImpl<DeviceEnergyStatis
         return list;
     }
 
+    public double getUserEnergy() {
+        SysUserBO user = MyUserUtil.getUser();
+        return baseMapper.getUserEnergy(user);
+    }
+
+    public List<JSONObject> getUserEnergyTrend(int statisticType) {
+        List<JSONObject> list = new ArrayList<>();
+        HashMap<String, JSONObject> map = new HashMap<>();
+        String format;
+        String parse;
+        DateTime startTime;
+        DateTime endTime;
+        switch (statisticType) {
+            case 1:
+                startTime = DateUtil.beginOfMonth(DateUtil.date());
+                endTime = DateUtil.endOfMonth(DateUtil.date());
+                format = "dd";
+                parse = "yyyy-MM-dd";
+                for (int i = 1; i <= DateUtil.endOfMonth(DateUtil.date()).dayOfMonth(); i++) {
+                    String time = StrUtil.padPre(i + "", 2, '0');
+                    JSONObject data = new JSONObject();
+                    data.put("time", time);
+                    data.put("value", 0.0);
+                    map.put(time + "", data);
+                    list.add(data);
+                }
+                break;
+            case 2:
+                startTime = DateUtil.beginOfYear(DateUtil.date());
+                endTime = DateUtil.endOfYear(DateUtil.date());
+                format = "MM";
+                parse = "yyyy-MM";
+                for (int i = 1; i <= 12; i++) {
+                    String time = StrUtil.padPre(i + "", 2, '0');
+                    JSONObject data = new JSONObject();
+                    data.put("time", time);
+                    data.put("value", 0.0);
+                    map.put(time + "", data);
+                    list.add(data);
+                }
+                break;
+            default:
+                return list;
+        }
+        SysUserBO user = MyUserUtil.getUser();
+        List<DeviceEnergyStatisticDO> energyList = baseMapper.getUserEnergyTrend(user, statisticType, startTime.offset(DateField.SECOND, -1), endTime);
+        for (DeviceEnergyStatisticDO deviceEnergyStatisticDO : energyList) {
+            JSONObject object = map.get(DateUtil.parse(deviceEnergyStatisticDO.getStatisticTime(), parse).toString(format));
+            object.put("value", object.getDouble("value") + deviceEnergyStatisticDO.getEnergyValue());
+        }
+        return list;
+    }
 }

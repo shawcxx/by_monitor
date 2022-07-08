@@ -8,7 +8,7 @@
         t_user_station tus ON
         tus.station_id = ts.station_id AND
         tus.user_id = #{form.userId}
-        JOIN sys_user su ON ts.user_id = su.user_id
+        left JOIN sys_user su ON ts.user_id = su.user_id
         <where>
             1=1
             <if test="form.stationName != null and form.stationName!=''">

@@ -32,4 +32,5 @@ public class StationRequestForm extends BasePageForm {
     private List<Long> deptList;
     private String username;
     private Long userId;
+    private Boolean queryData;
 }

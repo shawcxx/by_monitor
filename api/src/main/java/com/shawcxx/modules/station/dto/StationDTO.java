@@ -16,12 +16,16 @@ public class StationDTO {
     private String stationName;
     private String address;
     private String stationType;
-    private String stationCapacity;
-    private String  owner;
+    private Double stationCapacity;
+    private String owner;
     private Double power;
     private Double energy;
     private Object energyTrend;
     private Object alarmInfo;
+    /**
+     * -1 未使用,0 正常,1 离线,2 报警
+     */
+    private Integer stationStatus = 0;
     private Date updateTime;
     /**
      * 经度
@@ -36,4 +40,6 @@ public class StationDTO {
     private String country;
     private String location;
     private String installer;
+    private Integer inUse;
+
 }

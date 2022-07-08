@@ -51,9 +51,10 @@ public class SysDeptService extends ServiceImpl<SysDeptDAO, SysDeptDO> {
         sysDeptDO.setManager(form.getManager());
         sysDeptDO.setPhone(form.getPhone());
         String deptTree = parent.getDeptTree();
-        sysDeptDO.setDeptTree(deptTree + "," + parent.getDeptId());
         sysDeptDO.setParentId(form.getParentId());
         this.save(sysDeptDO);
+        sysDeptDO.setDeptTree(deptTree + "," + sysDeptDO.getDeptId());
+        this.updateById(sysDeptDO);
     }
 
     public void delete(Long deptId) {

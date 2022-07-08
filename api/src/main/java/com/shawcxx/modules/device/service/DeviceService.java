@@ -89,4 +89,9 @@ public class DeviceService extends ServiceImpl<DeviceDAO, DeviceDO> {
     public void deleteDevice(Long deviceId) {
         this.removeById(deviceId);
     }
+
+    public JSONObject getUserDevice() {
+        SysUserBO user = MyUserUtil.getUser();
+        return baseMapper.userDevice(user);
+    }
 }
