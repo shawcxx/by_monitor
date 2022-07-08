@@ -1,7 +1,11 @@
 package com.shawcxx.modules.device.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.modules.device.domain.DeviceDO;
+import com.shawcxx.modules.device.dto.DeviceDTO;
+import com.shawcxx.modules.device.form.DeviceRequestForm;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author Chen jl
@@ -9,4 +13,5 @@ import com.shawcxx.modules.device.domain.DeviceDO;
  * @description
  **/
 public interface DeviceDAO extends BaseMapper<DeviceDO> {
+    Page<DeviceDTO> deviceList(Page page, @Param("form") DeviceRequestForm form);
 }

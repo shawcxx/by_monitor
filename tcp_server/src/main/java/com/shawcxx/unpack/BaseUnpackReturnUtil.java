@@ -2,6 +2,7 @@ package com.shawcxx.unpack;
 
 import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.StrUtil;
+import com.shawcxx.common.util.MyHexUtil;
 
 /**
  * @author Chen jl
@@ -9,7 +10,7 @@ import cn.hutool.core.util.StrUtil;
  * @description
  **/
 public class BaseUnpackReturnUtil {
-    public static String getUnpackReturnData(String CMD, String deviceId, String... args) {
+    public static String getV1UnpackReturnData(String CMD, String deviceId, String... args) {
         int length = 0;
         //起始字符
         String protocol = "68";
@@ -27,7 +28,7 @@ public class BaseUnpackReturnUtil {
 
         //采集器ID
         length += 4;
-        String id = StrUtil.padPre(Long.parseLong(deviceId, 16) + "", 8, '0');
+        String id = StrUtil.padPre(Long.toHexString(Long.parseLong(deviceId)) + "", 8, '0');
 
         //预留
         length += 4;
@@ -35,7 +36,7 @@ public class BaseUnpackReturnUtil {
 
         StringBuilder data = new StringBuilder();
         for (String arg : args) {
-            length += arg.length();
+            length += arg.length() / 2;
             data.append(arg);
         }
 
@@ -47,15 +48,46 @@ public class BaseUnpackReturnUtil {
 
         String pre = protocol + StrUtil.padPre(HexUtil.toHex(length), 4, '0') + protocol2 + CMD + id + reverse + data.toString();
 
-        String cs = getCheckSum(pre);
+        String cs = getCheckSum1(pre);
 
         String end = "16";
 
-        return pre + cs + end;
+        return (pre + cs + end).toUpperCase();
     }
 
+    public static String getV2UnpackReturnData(String serverCmd, String cmd, String deviceId, String... args) {
+        //起始字符
+        String protocol = "6464";
 
-    private static String getCheckSum(String pre) {
+
+        //消息包索引
+        String sn = "8000";
+
+
+        //产生时间
+        String time = MyHexUtil.getDateHex();
+
+        //网关信息
+        String id = StrUtil.padPre(Long.toHexString(Long.parseLong(deviceId)) + "", 8, '0');
+
+        int length = 0;
+        StringBuilder data = new StringBuilder();
+        for (String arg : args) {
+            data.append(arg);
+            length += arg.length() / 2;
+        }
+        String result = sn + time + id + serverCmd + cmd + StrUtil.padPre(HexUtil.toHex(length), 2, '0') + data;
+        //cs
+
+        //end
+        String cs = getCheckSum2(result);
+
+        String end = "2323";
+
+        return (protocol + result + cs + end).toUpperCase();
+    }
+
+    private static String getCheckSum1(String pre) {
         long total = 0;
         for (String s : StrUtil.split(pre, 2)) {
             long i = Long.parseLong(s, 16);
@@ -72,9 +104,27 @@ public class BaseUnpackReturnUtil {
         return hex;
     }
 
+    private static String getCheckSum2(String pre) {
+        long total = 0;
+        for (String s : StrUtil.split(pre, 2)) {
+            long i = Long.parseLong(s, 16);
+
+            total += i;
+
+        }
+        /**
+         * 用256求余最大是255，即16进制的FF
+         */
+        int mod = (int) (total % 256);
+        String hex = StrUtil.padPre(Integer.toHexString(mod), 2, '0').toUpperCase();
+        return hex;
+    }
+
     public static void main(String[] args) {
         //A5
-        String data = "6803D66810049099912100000000F71F0B0E221111860033010B4D22450C0009E2C038733AE2320900000000000000000000000011860034010B4D2A44FF000B812C34993A79320C00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009916";
-        System.out.println(getCheckSum(data));
+        String data = StrUtil.replace("00 01 FF FF FF FF FF FF 89 AB CD EF 00 01 01 01"," ","");
+        System.out.println(getCheckSum2(data));
     }
+
+
 }

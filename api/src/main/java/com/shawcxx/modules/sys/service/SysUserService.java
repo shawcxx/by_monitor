@@ -30,17 +30,11 @@ import java.util.stream.Collectors;
 public class SysUserService extends ServiceImpl<SysUserDAO, SysUserDO> {
     @Resource
     private SysUserRoleService sysUserRoleService;
-
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
     public Page<SysUserDTO> query(SysUserQueryForm form) {
-        var username = form.getUsername();
-        var name = form.getName();
-        LambdaQueryWrapper<SysUserDO> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StrUtil.isNotBlank(username), SysUserDO::getUsername, username);
-        queryWrapper.like(StrUtil.isNotBlank(name), SysUserDO::getName, name);
-        Page<SysUserDO> page = this.page(new Page<>(form.getCurrent(), form.getSize()), queryWrapper);
-        Page<SysUserDTO> rpage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
-        rpage.setRecords(page.getRecords().stream().map(SysUserDTO::new).collect(Collectors.toList()));
+        Page<SysUserDTO> rpage = baseMapper.userList(new Page<>(form.getCurrent(), form.getSize()), form);
         return rpage;
     }
 

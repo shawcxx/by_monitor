@@ -32,6 +32,6 @@ public class TcpProtocol implements Protocol<String> {
     public String decode(ByteBuffer readBuffer, AioSession aioSession) {
         String data = MyUnpackUtil.readBuffer2Hex(readBuffer);
         log.info("收到aioSessionId:{},收到数据:{}", aioSession.getSessionID(), data);
-        return baseUnpackService.unpackV1(data);
+        return baseUnpackService.unpack(data);
     }
 }

@@ -13,6 +13,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysUserQueryForm extends BasePageForm {
 
+    private Long deptId;
+
     private String name;
 
     private String username;

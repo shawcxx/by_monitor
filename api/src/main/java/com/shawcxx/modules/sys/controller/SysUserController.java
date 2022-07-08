@@ -1,5 +1,6 @@
 package com.shawcxx.modules.sys.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.common.base.MyResult;
@@ -25,24 +26,26 @@ public class SysUserController {
     private SysUserService sysUserService;
 
     @PostMapping("info")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult info(@RequestParam Long id) {
         SysUserDTO sysUserDTO = sysUserService.info(id);
         return MyResult.data(sysUserDTO);
     }
 
     @PostMapping("saveOrUpdate")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult saveOrUpdate(@RequestBody @Validated SysUserForm form) {
         sysUserService.saveOrUpdate(form);
         return MyResult.ok();
     }
 
 
-    @PostMapping("query")
-    @SaCheckRole("admin")
-    public MyResult query(@RequestBody SysUserQueryForm form) {
+    @PostMapping("list")
+    @SaCheckLogin
+    public MyResult list(@RequestBody SysUserQueryForm form) {
         Page<SysUserDTO> page = sysUserService.query(form);
         return MyResult.data(page);
     }
+
+
 }

@@ -3,11 +3,14 @@ package com.shawcxx.modules.sys.service;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.shawcxx.common.base.MyResult;
 import com.shawcxx.common.base.SysUserBO;
 import com.shawcxx.common.exception.MyException;
 import com.shawcxx.modules.sys.domain.SysRoleDO;
 import com.shawcxx.modules.sys.domain.SysUserDO;
+import com.shawcxx.modules.sys.domain.SysUserDeptDO;
 import com.shawcxx.modules.sys.dto.SysMenuDTO;
 import com.shawcxx.modules.sys.dto.SysUserLoginDTO;
 import com.shawcxx.modules.sys.form.LoginForm;
@@ -33,6 +36,8 @@ public class SysLoginService {
 
     @Resource
     private SysMenuService sysMenuService;
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
     public MyResult login(LoginForm form) {
         String username = form.getUsername();
@@ -60,9 +65,11 @@ public class SysLoginService {
             dto.setRoleList(roles.stream().map(SysRoleDO::getRoleCode).collect(Collectors.toList()));
 
             SysUserBO sysUserBO = new SysUserBO();
+            List<SysUserDeptDO> deptList = sysUserDeptService.list(new LambdaQueryWrapper<SysUserDeptDO>().eq(SysUserDeptDO::getUserId, userId));
             sysUserBO.setUserId(sysUser.getUserId());
             sysUserBO.setUsername(sysUser.getUsername());
             sysUserBO.setName(sysUser.getName());
+            sysUserBO.setDeptList(deptList.stream().map(SysUserDeptDO::getDeptId).collect(Collectors.toList()));
             StpUtil.getSession().set("user", sysUserBO);
 
             return MyResult.data(dto);

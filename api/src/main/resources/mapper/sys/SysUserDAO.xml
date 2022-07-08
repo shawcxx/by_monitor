@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shawcxx.modules.sys.dao.SysUserDAO">
+    <select id="queryAllMenuId" resultType="java.lang.Long">
+        select distinct rm.menu_id
+        from sys_user_role ur
+                 LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id
+        where ur.user_id = #{userId}
+    </select>
+    <select id="queryPerms" resultType="java.lang.String">
+        select distinct sm.perms
+        from sys_user_role ur
+                 LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id
+                 LEFT JOIN sys_menu sm ON rm.menu_id = sm.menu_id
+        where ur.user_id = #{userId}
+    </select>
+    <select id="queryRoles" resultType="com.shawcxx.modules.sys.domain.SysRoleDO">
+        select sr.*
+        from sys_user_role ur
+                 left join sys_role sr ON ur.role_id = sr.role_id
+        where ur.user_id = #{userId}
+    </select>
+    <select id="userList" resultType="com.shawcxx.modules.sys.dto.SysUserDTO">
+        SELECT * FROM sys_user su
+        <if test="form.deptId!=null">
+            join sys_user_dept sud ON su.user_id = sud.user_id AND sud.dept_id =
+            #{form.deptId}
+        </if>
+        <where>
+            <if test="form.username != null and form.username != ''">
+                AND su.username like concat('%',#{form.username},'%')
+            </if>
+            <if test="form.name != null and form.name != ''">
+                AND su.name like concat('%',#{form.name},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

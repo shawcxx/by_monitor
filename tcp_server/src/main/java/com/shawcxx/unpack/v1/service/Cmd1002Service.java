@@ -18,6 +18,6 @@ public class Cmd1002Service {
     public String unpack(BaseUnpackBO baseUnpackBO) {
 
 
-        return BaseUnpackReturnUtil.getUnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(), "00", "00");
+        return BaseUnpackReturnUtil.getV1UnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(), "00", "00");
     }
 }

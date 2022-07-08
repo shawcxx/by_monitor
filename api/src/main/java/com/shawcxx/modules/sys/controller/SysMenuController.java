@@ -1,5 +1,6 @@
 package com.shawcxx.modules.sys.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.shawcxx.common.annotation.SysLog;
 import com.shawcxx.common.base.MyResult;
@@ -24,14 +25,14 @@ public class SysMenuController {
 
 
     @PostMapping("list")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult list() {
         List<SysMenuDTO> list = sysMenuService.sysMenuList(true);
         return MyResult.data(list);
     }
 
     @PostMapping("getMenuSelectTree")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult getMenuSelectTree() {
 
         SysMenuDTO dto = sysMenuService.getMenuSelectTree();
@@ -41,7 +42,7 @@ public class SysMenuController {
 
     @SysLog("删除菜单")
     @PostMapping("del")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult deleteById(@RequestParam Long id) {
         sysMenuService.delete(id);
         return MyResult.ok();
@@ -49,7 +50,7 @@ public class SysMenuController {
 
     @SysLog("编辑菜单")
     @PostMapping("saveOrUpdate")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult addOrUpdate(@RequestBody @Validated SysMenuForm form) {
         return sysMenuService.saveOrUpdate(form);
     }

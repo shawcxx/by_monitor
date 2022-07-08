@@ -5,6 +5,8 @@ import com.shawcxx.unpack.BaseUnpackReturnUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * @author Chen jl
  * @date 2022/6/20 20:43
@@ -15,12 +17,11 @@ import org.springframework.stereotype.Service;
 public class Cmd1008Service {
     private static final String RETURN_CMD = "1009";
 
+    @Resource
+    private Cmd1004Service cmd1004Service;
+
     public String unpack(BaseUnpackBO baseUnpackBO) {
-
-        //todo 解析
-        String content = baseUnpackBO.getContent();
-
-
-        return BaseUnpackReturnUtil.getUnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(),"00","00");
+        cmd1004Service.unpack(baseUnpackBO);
+        return BaseUnpackReturnUtil.getV1UnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(), "00", "00");
     }
 }

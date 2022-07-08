@@ -1,5 +1,6 @@
 package com.shawcxx.common.constant;
 
+import com.shawcxx.modules.device.domain.DeviceDO;
 import org.smartboot.socket.transport.AioSession;
 
 import java.io.File;
@@ -25,4 +26,5 @@ public class SysConstant {
      */
     public static Map<String, AioSession> SESSION_MAP = new ConcurrentHashMap<>();
 
+    public static Map<String, DeviceDO> DEVICE_MAP = new ConcurrentHashMap<>();
 }

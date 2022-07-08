@@ -20,6 +20,6 @@ public class Cmd1000Service {
     public String unpack(BaseUnpackBO baseUnpackBO) {
 
         //获取注册台数
-        return BaseUnpackReturnUtil.getUnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(), "00", "00");
+        return BaseUnpackReturnUtil.getV1UnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(), "00", "00");
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shawcxx.modules.device.dao.DeviceDAO">
+    <select id="deviceList" resultType="com.shawcxx.modules.device.dto.DeviceDTO">
+        SELECT td.*,ts.station_name FROM t_device td LEFT JOIN t_station ts ON td.station_id = ts.station_id
+        JOIN sys_dept sd on sd.dept_id = ts.dept_id LEFT JOIN t_user_station tus ON tus.station_id = ts.station_id AND
+        tus.user_id = #{form.userId}
+        <where>
+            1=1
+            <if test="form.deviceType != null">
+                AND td.device_type = #{form.deviceType}
+            </if>
+            <if test="form.stationId != null and form.stationId !=''">
+                AND td.station_id = #{form.stationId}
+            </if>
+            <if test="form.softwareVersion != null and form.softwareVersion !=''">
+                AND td.software_version = #{form.softwareVersion}
+            </if>
+            <if test="form.deviceNo != null and form.deviceNo !=''">
+                AND td.device_no = #{form.deviceNo}
+            </if>
+            AND
+            (
+            <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
+                find_in_set(#{deptId},sd.dept_tree)
+            </foreach>
+            OR ts.user_id = #{form.userId}
+            OR tus.id is not null
+            )
+
+        </where>
+    </select>
+</mapper>

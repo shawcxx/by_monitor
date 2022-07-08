@@ -12,6 +12,10 @@ spring:
       database: electric_monitor
       username: admin
       password: electricMonitor
+  redis:
+    host: 47.98.202.59
+    database: 4
+    password: 1012xiao
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

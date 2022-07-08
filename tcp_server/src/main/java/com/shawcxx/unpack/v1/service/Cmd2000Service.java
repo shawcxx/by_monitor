@@ -21,6 +21,6 @@ public class Cmd2000Service {
         String content = baseUnpackBO.getContent();
 
 
-        return BaseUnpackReturnUtil.getUnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId());
+        return BaseUnpackReturnUtil.getV1UnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId());
     }
 }

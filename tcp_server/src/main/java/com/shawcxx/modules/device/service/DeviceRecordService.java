@@ -5,6 +5,10 @@ import com.shawcxx.modules.device.dao.DeviceRecordDAO;
 import com.shawcxx.modules.device.domain.DeviceRecordDO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,7 +32,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class DeviceRecordService {
     @Resource
     private DeviceRecordDAO deviceRecordDAO;
-
+    @Resource
+    private MongoTemplate mongoTemplate;
     private static final ConcurrentLinkedQueue<DeviceRecordDO> queue = new ConcurrentLinkedQueue<>();
 
     public void saveAll(List<DeviceRecordDO> dataList) {
@@ -37,7 +42,7 @@ public class DeviceRecordService {
         }
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 5)
+    @Scheduled(fixedDelay = 1000 * 5)
     @PreDestroy
     public void saveData() {
         int limit = 0;
@@ -65,5 +70,14 @@ public class DeviceRecordService {
         deviceRecordDAO.saveAll(list);
         Long end = System.currentTimeMillis();
         log.info("存储数量:{},花费时间:{}", list.size(), end - start);
+    }
+
+    public DeviceRecordDO getLastData(String deviceNo, Integer deviceType) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("deviceNo").is(deviceNo).and("deviceType").is(deviceType));
+        query.with(Sort.by(Sort.Direction.DESC, "deviceTime"));
+        query.limit(1);
+        DeviceRecordDO one = mongoTemplate.findOne(query, DeviceRecordDO.class);
+        return one;
     }
 }

@@ -1,8 +1,11 @@
 package com.shawcxx.modules.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.modules.sys.domain.SysRoleDO;
 import com.shawcxx.modules.sys.domain.SysUserDO;
+import com.shawcxx.modules.sys.dto.SysUserDTO;
+import com.shawcxx.modules.sys.form.SysUserQueryForm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +28,5 @@ public interface SysUserDAO extends BaseMapper<SysUserDO> {
      */
     List<Long> queryAllMenuId(@Param("userId") Long userId);
 
+    Page<SysUserDTO> userList(Page page, @Param("form") SysUserQueryForm form);
 }

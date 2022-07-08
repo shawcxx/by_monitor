@@ -1,5 +1,6 @@
 package com.shawcxx.modules.device.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.shawcxx.modules.device.domain.DeviceDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -63,13 +64,15 @@ public class DeviceLastTimeService {
             DeviceLastTimeService.DEV_LAST_TIME_SET = new HashSet<>();
             if (0 < set.size()) {
                 for (DeviceDO deviceDO : set) {
-                    deviceService.updateByDeviceNO(deviceDO);
+                    deviceService.updateByDeviceNo(deviceDO);
                 }
             }
             //花费时间
             Long end = System.currentTimeMillis();
             //存储数据量
-            log.info("存储数量:{},花费时间:{}", set.size(), end - start);
+            if (CollUtil.isNotEmpty(set)) {
+                log.info("存储数量:{},花费时间:{}", set.size(), end - start);
+            }
         } catch (Exception e) {
             log.warn("设备最后数据时间错误", e);
         }

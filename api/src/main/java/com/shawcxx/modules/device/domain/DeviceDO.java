@@ -18,11 +18,12 @@ public class DeviceDO {
     @TableId(type = IdType.AUTO)
     private Long deviceId;
     private String deviceNo;
-    private Long deviceType;
+    private Integer deviceType;
     private Date createTime;
     private Date updateTime;
     private Date deviceTime;
-    private String dtuId;
+    private String emuId;
     private String hardwareVersion;
     private String softwareVersion;
+    private String stationId;
 }

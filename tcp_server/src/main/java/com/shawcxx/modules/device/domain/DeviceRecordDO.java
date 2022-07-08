@@ -3,7 +3,6 @@ package com.shawcxx.modules.device.domain;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.lang.annotation.Documented;
 import java.util.Date;
 
 /**
@@ -18,11 +17,12 @@ public class DeviceRecordDO {
     private String deviceNo;
     private Double voltage;
     private Double power;
-    private Double energy;
     private Double temperature;
     private Double gridVoltage;
     private Double gridFreq;
     private Date deviceTime;
     private String routeId;
+    private Double energy;
     private Integer deviceType;
+    private String stationId;
 }

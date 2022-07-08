@@ -17,10 +17,11 @@ public class DeviceRecordDO {
     private String deviceNo;
     private Double voltage;
     private Double power;
-    private Double energy;
     private Double temperature;
     private Double gridVoltage;
     private Double gridFreq;
     private Date deviceTime;
     private String routeId;
+    private Integer deviceType;
+    private String stationId;
 }

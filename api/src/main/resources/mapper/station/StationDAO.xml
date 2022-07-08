@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shawcxx.modules.station.dao.StationDAO">
+
+    <select id="stationList" resultType="com.shawcxx.modules.station.dto.StationDTO">
+        SELECT ts.*,sd.dept_name as installer, su.name as owner FROM t_station ts JOIN sys_dept sd ON ts.dept_id =
+        sd.dept_id LEFT JOIN
+        t_user_station tus ON
+        tus.station_id = ts.station_id AND
+        tus.user_id = #{form.userId}
+        JOIN sys_user su ON ts.user_id = su.user_id
+        <where>
+            1=1
+            <if test="form.stationName != null and form.stationName!=''">
+                AND ts.station_name like concat('%',#{form.stationName},'%')
+            </if>
+            AND
+            (
+            <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
+                find_in_set(#{deptId},sd.dept_tree)
+            </foreach>
+            OR ts.user_id = #{form.userId}
+            OR tus.id is not null
+            )
+        </where>
+    </select>
+    <select id="stationInfo" resultType="com.shawcxx.modules.station.dto.StationDTO">
+        SELECT ts.*, sd.dept_name as installer, su.name as owner
+        FROM t_station ts
+                 left JOIN sys_dept sd ON ts.dept_id = sd.dept_id
+                 left JOIN sys_user su ON ts.user_id = su.user_id
+        where ts.station_id = #{stationId}
+    </select>
+</mapper>

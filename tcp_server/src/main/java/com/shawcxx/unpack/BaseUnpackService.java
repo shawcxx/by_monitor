@@ -1,5 +1,6 @@
 package com.shawcxx.unpack;
 
+import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -21,61 +22,85 @@ import java.time.LocalDateTime;
 public class BaseUnpackService {
 
 
-    //68 0030 68 1006 90999121 00000000 02000010022300020034010B4D284505000BB4BA354038C73208000000000000A516
-    public String unpackV1(String data) {
+    public String unpack(String data) {
         if (StrUtil.isBlank(data)) {
             return null;
         }
         String result = null;
         try {
-            BaseUnpackBO baseUnpackBO = new BaseUnpackBO();
             String returnData = null;
             String protocol = MyHexUtil.getHex(data, 1, 1);
-            if (!"68".equals(protocol)) {
-                return null;
+            if ("68".equals(protocol)) {
+                returnData = unpackV1(data);
+            } else if ("64".equals(protocol)) {
+                returnData = unpackV2(data);
             }
-            int dataLength = MyHexUtil.getHexInt(data, 2, 2);
-            if (dataLength * 2 != data.length()) {
-                return null;
-            }
-            String protocol2 = MyHexUtil.getHex(data, 4, 1);
-            String cmd = MyHexUtil.getHex(data, 5, 2);
-            String routeId = MyHexUtil.getHexIntStr(data, 7, 4);
-
-
-            //保留字段
-//            String reverse = MyHexUtil.getRouteId(data, 11, 4);
-
-            int contentLength = dataLength - 16;
-            String content = MyHexUtil.getHex(data, 15, contentLength);
-            String cs = MyHexUtil.getHex(data, 15 + contentLength, 1);
-            String end = MyHexUtil.getHex(data, 16 + contentLength, 1);
-            baseUnpackBO.setProtocol(protocol);
-            baseUnpackBO.setRouteId(routeId);
-            baseUnpackBO.setCmd(cmd);
-            baseUnpackBO.setContent(content);
-            baseUnpackBO.setCs(cs);
-            baseUnpackBO.setEnd(end);
-
-            Object bean = SpringUtil.getBean("v1Cmd" + cmd + "Service");
-            returnData = ReflectUtil.invoke(bean, "unpack", baseUnpackBO);
-
             return returnData;
         } catch (Exception e) {
-
             log.warn("协议解析错误", e);
         }
         if (result != null) {
             //todo 保存收到的数据和返回的数据
         }
         return result;
+    }
+
+    private String unpackV1(String data) {
+        String protocol = MyHexUtil.getHex(data, 1, 1);
+        BaseUnpackBO baseUnpackBO = new BaseUnpackBO();
+
+        int dataLength = MyHexUtil.getHexInt(data, 2, 2);
+        if (dataLength * 2 != data.length()) {
+            return null;
+        }
+        String protocol2 = MyHexUtil.getHex(data, 4, 1);
+        String cmd = MyHexUtil.getHex(data, 5, 2);
+        String routeId = MyHexUtil.getHex(data, 7, 4);
 
 
+        //保留字段
+//            String reverse = MyHexUtil.getRouteId(data, 11, 4);
+
+        int contentLength = dataLength - 16;
+        String content = MyHexUtil.getHex(data, 15, contentLength);
+        String cs = MyHexUtil.getHex(data, 15 + contentLength, 1);
+        String end = MyHexUtil.getHex(data, 16 + contentLength, 1);
+        baseUnpackBO.setProtocol(protocol);
+        baseUnpackBO.setRouteId(routeId);
+        baseUnpackBO.setCmd(cmd);
+        baseUnpackBO.setContent(content);
+        baseUnpackBO.setCs(cs);
+        baseUnpackBO.setEnd(end);
+
+        Object bean = SpringUtil.getBean("v1Cmd" + cmd + "Service");
+        if (bean != null) {
+            return ReflectUtil.invoke(bean, "unpack", baseUnpackBO);
+        }
+        return null;
+    }
+
+    private String unpackV2(String data) {
+        String protocol = MyHexUtil.getHex(data, 1, 1);
+        BaseUnpackBO baseUnpackBO = new BaseUnpackBO();
+        String sn = MyHexUtil.getHexIntStr(data, 3, 2);
+//        LocalDateTime deviceTime = MyHexUtil.getDate(data, 5, 6);
+        String routeId = MyHexUtil.getHex(data, 11, 4);
+        String cmd = MyHexUtil.getHex(data, 15, 1);
+        String content = StrUtil.sub(data, 15 * 2, data.length());
+        baseUnpackBO.setProtocol(protocol);
+        baseUnpackBO.setRouteId(routeId);
+        baseUnpackBO.setCmd(cmd);
+        baseUnpackBO.setContent(content);
+//        baseUnpackBO.setDeviceTime(deviceTime);
+        Object bean = SpringUtil.getBean("v2Cmd" + cmd + "Service");
+        if (bean != null) {
+            return ReflectUtil.invoke(bean, "unpack", baseUnpackBO);
+        }
+        return null;
     }
 
     public static void main(String[] args) {
         BaseUnpackService baseUnpackService = new BaseUnpackService();
-        baseUnpackService.unpackV1("680030681006909991210000000002000010022300020034010B4D284505000BB4BA354038C73208000000000000A516");
     }
 }
 

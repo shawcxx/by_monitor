@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class TcpSender implements MessageProcessor<String> {
     @Override
     public void process(AioSession aioSession, String msg) {
+
         String sessionId = aioSession.getSessionID();
         AioSession onlineSession = SysConstant.SESSION_MAP.get(sessionId);
         if (null == onlineSession) {
@@ -48,14 +49,16 @@ public class TcpSender implements MessageProcessor<String> {
         String aioSessionId = aioSession.getSessionID();
         switch (stateMachineEnum) {
             case NEW_SESSION:
-//                log.info("创建链接客户端:{} ", aioSessionId);
                 SysConstant.SESSION_MAP.put(aioSessionId, aioSession);
                 break;
             case SESSION_CLOSED:
-//                log.info("断开客户端链接: {}", aioSessionId);
                 SysConstant.SESSION_MAP.remove(aioSessionId);
                 break;
             default:
+        }
+        log.info("{}:{}", aioSessionId, stateMachineEnum.name());
+        if (throwable != null) {
+            log.error("连接异常", throwable);
         }
     }
 }

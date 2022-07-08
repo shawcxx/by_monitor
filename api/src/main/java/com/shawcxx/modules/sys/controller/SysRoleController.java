@@ -1,5 +1,6 @@
 package com.shawcxx.modules.sys.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.common.annotation.SysLog;
@@ -27,7 +28,7 @@ public class SysRoleController {
 
 
     @PostMapping("query")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult list(@RequestBody SysRoleQueryForm form) {
         Page<SysRoleDO> page = sysRoleService.query(form);
         return MyResult.data(page);
@@ -35,7 +36,7 @@ public class SysRoleController {
 
     @GetMapping("del")
     @SysLog("删除角色")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult deleteById(@RequestParam Long id) {
         sysRoleService.delete(id);
         return MyResult.ok("删除成功");
@@ -44,7 +45,7 @@ public class SysRoleController {
 
     @PostMapping("saveOrUpdate")
     @SysLog("新增或修改角色")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult insertOrUpdate(@RequestBody @Validated SysRoleForm form) {
         sysRoleService.saveOrUpdate(form);
         return MyResult.ok();
@@ -52,7 +53,7 @@ public class SysRoleController {
     }
 
     @PostMapping("info")
-    @SaCheckRole("admin")
+    @SaCheckLogin
     public MyResult queryPage(@RequestParam Long id) {
         SysRoleDTO sysRoleDTO = sysRoleService.info(id);
         return MyResult.data(sysRoleDTO);

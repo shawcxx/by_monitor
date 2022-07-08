@@ -1,6 +1,7 @@
 package com.shawcxx.common.util;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.time.LocalDate;
@@ -61,6 +62,7 @@ public class MyHexUtil {
         }
         return ArrayUtil.reverse(str);
     }
+
     public static List<String> getHexDataList(String inputString, int length) {
         int size = inputString.length() / length;
         if (inputString.length() % length != 0) {
@@ -140,7 +142,6 @@ public class MyHexUtil {
     }
 
 
-
     public static LocalDateTime getDate(String data, int start, int hexLength) {
         String date = MyHexUtil.getHex(data, start, hexLength);
         int year = MyHexUtil.getHexInt(date, 1, 1);
@@ -152,9 +153,23 @@ public class MyHexUtil {
         return LocalDateTime.of(LocalDate.of(2000 + year, month, day), LocalTime.of(hour, minute, second));
     }
 
-    public static String getRouteId(String data, int start, int hexLength) {
-        return null;
+    public static String getDateHex() {
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear() - 2000;
+        int month = now.getMonthValue();
+        int day = now.getDayOfMonth();
+        int hour = now.getHour();
+        int minute = now.getMinute();
+        int second = now.getSecond();
+        String yearStr = StrUtil.padPre(HexUtil.toHex(year), 2, '0');
+        String monthStr = StrUtil.padPre(HexUtil.toHex(month), 2, '0');
+        String dayStr = StrUtil.padPre(HexUtil.toHex(day), 2, '0');
+        String hourStr = StrUtil.padPre(HexUtil.toHex(hour), 2, '0');
+        String minuteStr = StrUtil.padPre(HexUtil.toHex(minute), 2, '0');
+        String secondStr = StrUtil.padPre(HexUtil.toHex(second), 2, '0');
+        return (yearStr + monthStr + dayStr + hourStr + minuteStr + secondStr).toUpperCase();
     }
+
 
     public static void main(String[] args) {
         //int num = 1700;
@@ -164,7 +179,9 @@ public class MyHexUtil {
         //data = data2 + data1;
         //System.out.println(data);
 
-        String data = "1609100f101e";
-        System.out.println(getDate(data, 1, 6));
+        System.out.println(getDateHex());
+        System.out.println(getDate("16070115100D", 1, 6));
     }
+
+
 }

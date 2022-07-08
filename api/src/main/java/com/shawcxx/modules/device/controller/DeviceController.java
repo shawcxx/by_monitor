@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.common.base.MyResult;
 import com.shawcxx.modules.device.dto.DeviceDTO;
+import com.shawcxx.modules.device.form.DeviceForm;
 import com.shawcxx.modules.device.form.DeviceRequestForm;
 import com.shawcxx.modules.device.service.DeviceRecordService;
 import com.shawcxx.modules.device.service.DeviceService;
@@ -36,4 +37,23 @@ public class DeviceController {
         List<JSONObject> list = deviceRecordService.deviceRecord(deviceNo, type);
         return MyResult.data(list);
     }
+
+    @PostMapping("energyHistory")
+    public MyResult energyHistory(@RequestBody DeviceRequestForm form) {
+        List<JSONObject> list = deviceService.energyHistory(form);
+        return MyResult.data(list);
+    }
+
+    @PostMapping("saveDevice")
+    public MyResult saveDevice(@RequestBody DeviceForm form) {
+        deviceService.saveDevice(form);
+        return MyResult.ok();
+    }
+
+    @PostMapping("deleteDevice")
+    public MyResult deleteDevice(@RequestParam Long deviceId) {
+        deviceService.deleteDevice(deviceId);
+        return MyResult.ok();
+    }
+
 }

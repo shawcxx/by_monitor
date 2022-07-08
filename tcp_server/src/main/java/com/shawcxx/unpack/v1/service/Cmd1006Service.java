@@ -19,6 +19,6 @@ public class Cmd1006Service {
 
         //todo 解析
         String content = baseUnpackBO.getContent();
-        return BaseUnpackReturnUtil.getUnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(),"01000010104400000000000000");
+        return BaseUnpackReturnUtil.getV1UnpackReturnData(RETURN_CMD, baseUnpackBO.getRouteId(),"01000010104400000000000000");
     }
 }
