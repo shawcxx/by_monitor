@@ -10,7 +10,7 @@
         tus.user_id = #{form.userId}
         left JOIN sys_user su ON ts.user_id = su.user_id
         <where>
-            1=1
+            ts.del_flag = 0
             <if test="form.stationName != null and form.stationName!=''">
                 AND ts.station_name like concat('%',#{form.stationName},'%')
             </if>

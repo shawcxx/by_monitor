@@ -42,6 +42,7 @@ public class SysUserDTO {
      * 角色ID列表
      */
     private List<Long> roleIdList;
+    private List<Long> deptIdList;
 
     public SysUserDTO(SysUserDO sysUserDO) {
         BeanUtil.copyProperties(sysUserDO, this);

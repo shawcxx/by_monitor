@@ -10,6 +10,7 @@ import com.shawcxx.common.exception.MyException;
 import com.shawcxx.modules.sys.dao.SysUserDAO;
 import com.shawcxx.modules.sys.domain.SysRoleDO;
 import com.shawcxx.modules.sys.domain.SysUserDO;
+import com.shawcxx.modules.sys.domain.SysUserDeptDO;
 import com.shawcxx.modules.sys.dto.SysUserDTO;
 import com.shawcxx.modules.sys.form.SysUserForm;
 import com.shawcxx.modules.sys.form.SysUserQueryForm;
@@ -72,6 +73,7 @@ public class SysUserService extends ServiceImpl<SysUserDAO, SysUserDO> {
             //获取用户所属的角色列表
             List<SysRoleDO> roles = baseMapper.queryRoles(userId);
             sysUserDTO.setRoleIdList(roles.stream().map(SysRoleDO::getRoleId).collect(Collectors.toList()));
+            sysUserDTO.setDeptIdList(sysUserDeptService.list(new LambdaQueryWrapper<SysUserDeptDO>().eq(SysUserDeptDO::getUserId, user.getUserId())).stream().map(SysUserDeptDO::getDeptId).collect(Collectors.toList()));
         }
         return sysUserDTO;
     }

@@ -17,7 +17,7 @@ public class DeviceDTO {
     // 1:正常 2:离线 3:故障 4:报警
     private Integer deviceStatus = 1;
     private String stationName;
-    private Long dtuId;
+    private String emuId;
     private String version;
     private Integer deviceType;
     private String hardwareVersion;

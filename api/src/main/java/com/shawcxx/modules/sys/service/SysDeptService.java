@@ -90,4 +90,27 @@ public class SysDeptService extends ServiceImpl<SysDeptDAO, SysDeptDO> {
             sysUserDeptService.save(sysUserDeptDO);
         }
     }
+
+    public void editDept(SysDeptForm form) {
+        if (form.getDeptId() == null) {
+            throw new MyException("请求参数错误");
+        }
+        if (form.getParentId().equals(form.getDeptId())) {
+            throw new MyException("上级不能选择自己");
+        }
+        SysDeptDO sysDeptDO = new SysDeptDO();
+        SysDeptDO parent = this.getById(form.getParentId());
+        if (parent == null) {
+            throw new MyException("上级不存在");
+        }
+        sysDeptDO.setDeptName(form.getDeptName());
+        sysDeptDO.setAddress(form.getAddress());
+        sysDeptDO.setManager(form.getManager());
+        sysDeptDO.setPhone(form.getPhone());
+        String deptTree = parent.getDeptTree();
+        sysDeptDO.setParentId(form.getParentId());
+        sysDeptDO.setDeptId(form.getDeptId());
+        sysDeptDO.setDeptTree(deptTree + "," + sysDeptDO.getDeptId());
+        this.updateById(sysDeptDO);
+    }
 }

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class SysDeptForm {
+    private Long deptId;
     @NotBlank(message = "部门名称不能为空")
     @Length(max = 50, message = "部门名称过长")
     private String deptName;

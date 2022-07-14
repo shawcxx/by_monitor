@@ -152,7 +152,6 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
     }
 
     public void dataExport(StationRequestForm form, HttpServletResponse response) {
-
     }
 
 
@@ -166,14 +165,17 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
                 return deviceDTO;
             }).collect(Collectors.toMap(DeviceDTO::getDeviceNo, o -> o));
             for (DeviceDO deviceDO : deviceList) {
-                if (deviceDO.getDeviceType() == 1) {
+                if (deviceDO.getDeviceType() == 2) {
                     DeviceDTO deviceDTO = routeList.get(deviceDO.getDeviceNo());
                     list.add(deviceDTO);
                 } else {
                     DeviceDTO deviceDTO = routeList.get(deviceDO.getEmuId());
-                    DeviceDTO child = new DeviceDTO();
-                    if (CollUtil.isEmpty(deviceDTO.getList())) {
-                        deviceDTO.setList(new ArrayList<>());
+                    if (deviceDTO != null) {
+                        DeviceDTO child = new DeviceDTO();
+                        BeanUtil.copyProperties(deviceDO, child);
+                        if (CollUtil.isEmpty(deviceDTO.getList())) {
+                            deviceDTO.setList(new ArrayList<>());
+                        }
                         deviceDTO.getList().add(child);
                     }
                 }

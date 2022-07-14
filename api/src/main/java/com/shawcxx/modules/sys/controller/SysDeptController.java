@@ -37,6 +37,11 @@ public class SysDeptController {
         return MyResult.ok();
     }
 
+    @PostMapping("editDept")
+    public MyResult editDept(@RequestBody @Validated SysDeptForm form) {
+        sysDeptService.editDept(form);
+        return MyResult.ok();
+    }
 
     @PostMapping("delete")
     public MyResult delete(@RequestParam Long deptId) {
