@@ -16,10 +16,13 @@
             </if>
             AND
             (
-            <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},sd.dept_tree)
-            </foreach>
-            OR ts.user_id = #{form.userId}
+            <if test="form.deptList !=null and form.deptList.size()>0">
+                <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},sd.dept_tree)
+                </foreach>
+                OR
+            </if>
+            ts.user_id = #{form.userId}
             OR tus.id is not null
             )
         </where>

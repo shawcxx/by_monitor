@@ -28,7 +28,7 @@ public class BaseUnpackReturnUtil {
 
         //采集器ID
         length += 4;
-        String id = StrUtil.padPre(Long.toHexString(Long.parseLong(deviceId)) + "", 8, '0');
+        String id = deviceId;
 
         //预留
         length += 4;
@@ -68,7 +68,7 @@ public class BaseUnpackReturnUtil {
         String time = MyHexUtil.getDateHex();
 
         //网关信息
-        String id = StrUtil.padPre(Long.toHexString(Long.parseLong(deviceId)) + "", 8, '0');
+        String id = deviceId;
 
         int length = 0;
         StringBuilder data = new StringBuilder();
@@ -122,9 +122,7 @@ public class BaseUnpackReturnUtil {
 
     public static void main(String[] args) {
         //A5
-        String data = StrUtil.replace("00 01 FF FF FF FF FF FF 89 AB CD EF 00 01 01 01"," ","");
+        String data = StrUtil.replace("00 01 FF FF FF FF FF FF 89 AB CD EF 00 01 01 01", " ", "");
         System.out.println(getCheckSum2(data));
     }
-
-
 }

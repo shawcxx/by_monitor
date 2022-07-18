@@ -79,7 +79,7 @@ public class SysDeptService extends ServiceImpl<SysDeptDAO, SysDeptDO> {
         }
         SysUserDO user = sysUserService.getOne(new LambdaQueryWrapper<SysUserDO>().eq(SysUserDO::getUsername, username));
         if (user == null) {
-            throw new MyException("用户不存在,请先创建用户");
+            throw new MyException("用户不存在");
         }
         LambdaQueryWrapper<SysUserDeptDO> queryWrapper = new LambdaQueryWrapper<SysUserDeptDO>().eq(SysUserDeptDO::getUserId, user.getUserId()).eq(SysUserDeptDO::getDeptId, deptId);
         SysUserDeptDO one = sysUserDeptService.getOne(queryWrapper);

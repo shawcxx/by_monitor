@@ -26,4 +26,5 @@ public class DeviceDO {
     private String hardwareVersion;
     private String softwareVersion;
     private String stationId;
+    private Integer sort;
 }

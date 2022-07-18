@@ -63,20 +63,38 @@ public class DeviceService extends ServiceImpl<DeviceDAO, DeviceDO> {
         if (stationDO == null) {
             throw new MyException("电站不存在");
         }
+
+
+        LambdaQueryWrapper<DeviceDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceDO::getDeviceNo, emuId);
+        DeviceDO emu = this.getOne(queryWrapper);
+        if (emu == null) {
+            emu = new DeviceDO();
+            emu.setDeviceNo(emuId);
+            emu.setStationId(stationId);
+            emu.setDeviceType(2);
+            this.save(emu);
+        }
+
         List<String> deviceList = form.getDeviceList();
+        int i = 0;
         for (String deviceNo : deviceList) {
             //判断设备是否已被报装
-            LambdaQueryWrapper<DeviceDO> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.clear();
             queryWrapper.eq(DeviceDO::getDeviceNo, deviceNo);
             DeviceDO one = this.getOne(queryWrapper);
-            if (one != null) {
+            if (one != null && !one.getStationId().equals(stationId)) {
                 throw new MyException("设备:" + deviceNo + "已被使用");
+            } else {
+                one = new DeviceDO();
+                one.setDeviceNo(deviceNo);
+                one.setStationId(stationId);
             }
-            DeviceDO deviceDO = new DeviceDO();
-            deviceDO.setDeviceNo(deviceNo);
-            deviceDO.setEmuId(emuId);
-            deviceDO.setStationId(stationId);
-            list.add(deviceDO);
+            one.setSort(i);
+            one.setDeviceType(1);
+            one.setEmuId(emuId);
+            list.add(one);
+            i++;
         }
         this.saveOrUpdateBatch(list);
 

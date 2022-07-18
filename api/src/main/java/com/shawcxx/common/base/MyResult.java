@@ -35,7 +35,7 @@ public class MyResult extends HashMap<String, Object> {
     }
 
     public static MyResult error() {
-        return error(ERROR, "未知异常，请联系管理员");
+        return error(ERROR, "未知异常,请联系管理员");
     }
 
     public static MyResult error(String msg) {

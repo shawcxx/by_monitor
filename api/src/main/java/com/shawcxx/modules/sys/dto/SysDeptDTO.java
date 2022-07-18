@@ -30,4 +30,6 @@ public class SysDeptDTO {
      * 联系方式
      */
     private String phone;
+
+    private Long parentId;
 }

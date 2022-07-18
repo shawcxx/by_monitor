@@ -68,5 +68,6 @@ public class SysMenuForm implements Serializable {
 
     @NotNull(message = "父菜单不能为空")
     private List<Long> parentList;
+    private String menuNameEn;
 
 }

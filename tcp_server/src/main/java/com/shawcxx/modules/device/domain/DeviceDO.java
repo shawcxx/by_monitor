@@ -28,6 +28,8 @@ public class DeviceDO {
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private String stationId;
 
+    private Integer sort;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

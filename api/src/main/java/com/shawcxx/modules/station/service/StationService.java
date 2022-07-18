@@ -78,6 +78,8 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
 
     public StationDTO stationInfo(String stationId) {
         StationDTO stationDTO = baseMapper.stationInfo(stationId);
+        JSONObject energyStatistic = deviceEnergyStatisticService.stationEnergyStatistic(stationId);
+        stationDTO.setEnergyStatistic(energyStatistic);
         return stationDTO;
     }
 
@@ -157,8 +159,11 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
 
     public List<DeviceDTO> deviceList(String stationId, Integer type) {
         List<DeviceDTO> list = new ArrayList<>();
+        LambdaQueryWrapper<DeviceDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceDO::getStationId, stationId);
+        queryWrapper.orderByAsc(DeviceDO::getSort);
         if (type == 1) {
-            List<DeviceDO> deviceList = deviceDAO.selectList(new LambdaQueryWrapper<DeviceDO>().eq(DeviceDO::getStationId, stationId));
+            List<DeviceDO> deviceList = deviceDAO.selectList(queryWrapper);
             Map<String, DeviceDTO> routeList = deviceList.stream().filter(o -> o.getDeviceType() == 2).map(o -> {
                 DeviceDTO deviceDTO = new DeviceDTO();
                 BeanUtil.copyProperties(o, deviceDTO);
@@ -181,7 +186,8 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
                 }
             }
         } else if (type == 2) {
-            List<DeviceDO> deviceList = deviceDAO.selectList(new LambdaQueryWrapper<DeviceDO>().eq(DeviceDO::getStationId, stationId).eq(DeviceDO::getDeviceType, 1));
+            queryWrapper.eq(DeviceDO::getDeviceType, 1);
+            List<DeviceDO> deviceList = deviceDAO.selectList(queryWrapper);
             for (DeviceDO deviceDO : deviceList) {
                 DeviceDTO deviceDTO = new DeviceDTO();
                 BeanUtil.copyProperties(deviceDO, deviceDTO);

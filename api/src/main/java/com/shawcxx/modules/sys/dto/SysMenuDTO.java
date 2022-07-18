@@ -66,6 +66,8 @@ public class SysMenuDTO implements Serializable {
 
     private List<Long> parentList;
 
+    private String menuNameEn;
+
     public SysMenuDTO(SysMenuDO sysMenuDO) {
         BeanUtil.copyProperties(sysMenuDO, this);
         if (StrUtil.isNotBlank(sysMenuDO.getParentArray())) {

@@ -11,13 +11,18 @@
         tus.station_id = ts.station_id AND
         tus.user_id = #{user.userId}
         <where>
-            des.statistic_type = 3
+            ts.del_flag=0
+
+            AND des.statistic_type = 3
             AND
             (
-            <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},sd.dept_tree)
-            </foreach>
-            OR ts.user_id = #{user.userId}
+            <if test="user.deptList !=null and user.deptList.size()>0">
+                <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},sd.dept_tree)
+                </foreach>
+                OR
+            </if>
+            ts.user_id = #{user.userId}
             OR tus.id is not null
             )
         </where>
@@ -33,15 +38,19 @@
         tus.station_id = ts.station_id AND
         tus.user_id = #{user.userId}
         <where>
-            des.statistic_type = #{statisticType}
+            ts.del_flag=0
+            AND des.statistic_type = #{statisticType}
             AND des.statistic_time &gt;= #{startTime}
             AND des.statistic_time &lt;= #{endTime}
             AND
             (
-            <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},sd.dept_tree)
-            </foreach>
-            OR ts.user_id = #{user.userId}
+            <if test="user.deptList !=null and user.deptList.size()>0">
+                <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},sd.dept_tree)
+                </foreach>
+                OR
+            </if>
+            ts.user_id = #{user.userId}
             OR tus.id is not null
             )
         </where>

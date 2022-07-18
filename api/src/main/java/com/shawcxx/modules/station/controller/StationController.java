@@ -4,6 +4,8 @@ package com.shawcxx.modules.station.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shawcxx.common.base.MyResult;
+import com.shawcxx.common.validate.Edit;
+import com.shawcxx.common.validate.Insert;
 import com.shawcxx.modules.device.dto.DeviceDTO;
 import com.shawcxx.modules.station.dto.StationDTO;
 import com.shawcxx.modules.station.form.StationForm;
@@ -60,7 +62,7 @@ public class StationController {
      * @return
      */
     @PostMapping("createStation")
-    public MyResult createStation(@RequestBody @Validated StationForm stationForm) {
+    public MyResult createStation(@RequestBody @Validated(value = Insert.class) StationForm stationForm) {
         StationDTO stationDTO = stationService.createStation(stationForm);
         return MyResult.data(stationDTO);
     }
@@ -72,7 +74,7 @@ public class StationController {
      * @return
      */
     @PostMapping("modifyStation")
-    public MyResult modifyStation(@RequestBody @Validated StationForm stationForm) {
+    public MyResult modifyStation(@RequestBody @Validated(value = Edit.class) StationForm stationForm) {
         stationService.modifyStation(stationForm);
         return MyResult.ok();
     }

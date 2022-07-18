@@ -1,6 +1,9 @@
 package com.shawcxx.modules.sys.controller;
 
 import com.shawcxx.common.base.MyResult;
+import com.shawcxx.common.exception.MyException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +21,8 @@ public class HomeController {
      * home
      */
     @GetMapping
-    public MyResult home() {
-        return MyResult.ok("hello user");
+    public MyResult home() throws HttpRequestMethodNotSupportedException {
+        throw new HttpRequestMethodNotSupportedException("");
     }
 
 }

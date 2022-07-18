@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <edition>0.0.1</edition>
+        <edition>0.0.2</edition>
         <java.version>1.8</java.version>
         <fastjson.version>1.2.80</fastjson.version>
         <hutool-all.version>5.7.22</hutool-all.version>

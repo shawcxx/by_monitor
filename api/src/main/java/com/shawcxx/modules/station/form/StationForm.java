@@ -1,14 +1,12 @@
 package com.shawcxx.modules.station.form;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.shawcxx.common.validate.Edit;
+import com.shawcxx.common.validate.Insert;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * @author cjl
@@ -25,20 +23,20 @@ public class StationForm {
     /**
      * 电站名称
      */
-    @NotBlank(message = "电站名称不能为空")
-    @Length(max = 100, message = "电站名称长度不能超过100位")
+    @NotBlank(message = "电站名称不能为空",groups = {Insert.class, Edit.class})
+    @Length(max = 100, message = "电站名称长度不能超过100位",groups = {Insert.class, Edit.class})
     private String stationName;
 
     /**
      * 电站类型
      */
-    @NotBlank(message = "电站类型不能为空")
+    @NotBlank(message = "电站类型不能为空",groups = {Insert.class, Edit.class})
     private String stationType;
 
     /**
      * 装机容量
      */
-    @NotNull(message = "装机容量不能为空")
+    @NotNull(message = "装机容量不能为空",groups = {Insert.class, Edit.class})
     private Double stationCapacity;
 
     /**
@@ -58,8 +56,8 @@ public class StationForm {
     private String timeZone;
     private String country;
     private String location;
-    @NotNull(message = "安装商不能为空")
+    @NotNull(message = "安装商不能为空", groups = Insert.class)
     private Long deptId;
-    @NotBlank(message = "业主信息不能为空")
+    @NotBlank(message = "业主信息不能为空", groups = Insert.class)
     private String username;
 }

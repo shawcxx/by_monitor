@@ -6,7 +6,7 @@
         JOIN sys_dept sd on sd.dept_id = ts.dept_id LEFT JOIN t_user_station tus ON tus.station_id = ts.station_id AND
         tus.user_id = #{form.userId}
         <where>
-            1=1
+            ts.del_flag=0
             <if test="form.deviceType != null">
                 AND td.device_type = #{form.deviceType}
             </if>
@@ -21,10 +21,13 @@
             </if>
             AND
             (
-            <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},sd.dept_tree)
-            </foreach>
-            OR ts.user_id = #{form.userId}
+            <if test="form.deptList !=null and form.deptList.size()>0">
+                <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},sd.dept_tree)
+                </foreach>
+                OR
+            </if>
+            ts.user_id = #{form.userId}
             OR tus.id is not null
             )
 
@@ -40,13 +43,17 @@
         tus.station_id = ts.station_id AND
         tus.user_id = #{user.userId}
         <where>
-            1=1
+            ts.del_flag=0
             AND
             (
-            <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},sd.dept_tree)
-            </foreach>
-            OR ts.user_id = #{user.userId}
+            <if test="user.deptList !=null and user.deptList.size()>0">
+                <foreach collection="user.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},sd.dept_tree)
+                </foreach>
+                OR
+            </if>
+
+            ts.user_id = #{user.userId}
             OR tus.id is not null
             )
         </where>

@@ -242,4 +242,41 @@ public class DeviceEnergyStatisticService extends ServiceImpl<DeviceEnergyStatis
         }
         return list;
     }
+
+    public JSONObject stationEnergyStatistic(String stationId) {
+        JSONObject energyStatistic = new JSONObject();
+        DateTime now = DateUtil.date();
+        LambdaQueryWrapper<DeviceEnergyStatisticDO> q = new LambdaQueryWrapper<>();
+        q.eq(DeviceEnergyStatisticDO::getStatisticType, 1);
+        q.eq(DeviceEnergyStatisticDO::getStationId, stationId);
+        q.eq(DeviceEnergyStatisticDO::getStatisticTime, DateUtil.format(now, "yyyy-MM-dd"));
+        List<DeviceEnergyStatisticDO> list = this.list(q);
+        double sum = list.stream().mapToDouble(DeviceEnergyStatisticDO::getEnergyValue).sum();
+        energyStatistic.put("1", sum);
+
+        q.clear();
+        q.eq(DeviceEnergyStatisticDO::getStatisticType, 2);
+        q.eq(DeviceEnergyStatisticDO::getStationId, stationId);
+        q.eq(DeviceEnergyStatisticDO::getStatisticTime, DateUtil.format(now, "yyyy-MM"));
+        list = this.list(q);
+        sum = list.stream().mapToDouble(DeviceEnergyStatisticDO::getEnergyValue).sum();
+        energyStatistic.put("2", sum);
+
+        q.clear();
+        q.eq(DeviceEnergyStatisticDO::getStatisticType, 3);
+        q.eq(DeviceEnergyStatisticDO::getStationId, stationId);
+        q.eq(DeviceEnergyStatisticDO::getStatisticTime, DateUtil.format(now, "yyyy"));
+        list = this.list(q);
+        sum = list.stream().mapToDouble(DeviceEnergyStatisticDO::getEnergyValue).sum();
+        energyStatistic.put("3", sum);
+
+        q.clear();
+        q.eq(DeviceEnergyStatisticDO::getStatisticType, 3);
+        q.eq(DeviceEnergyStatisticDO::getStationId, stationId);
+        list = this.list(q);
+        sum = list.stream().mapToDouble(DeviceEnergyStatisticDO::getEnergyValue).sum();
+        energyStatistic.put("4", sum);
+
+        return energyStatistic;
+    }
 }

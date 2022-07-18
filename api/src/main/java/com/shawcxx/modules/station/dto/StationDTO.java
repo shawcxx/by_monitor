@@ -1,6 +1,6 @@
 package com.shawcxx.modules.station.dto;
 
-import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.util.Date;
@@ -42,4 +42,5 @@ public class StationDTO {
     private String installer;
     private Integer inUse;
 
+    private JSONObject energyStatistic;
 }

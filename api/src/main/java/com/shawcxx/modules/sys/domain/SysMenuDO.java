@@ -68,4 +68,6 @@ public class SysMenuDO implements Serializable {
 
     private String parentArray;
 
+    private String menuNameEn;
+
 }
