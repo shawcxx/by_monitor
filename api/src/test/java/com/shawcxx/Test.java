@@ -1,10 +1,8 @@
 package com.shawcxx;
 
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.shawcxx.modules.sys.dao.SysUserDAO;
-import com.shawcxx.modules.sys.dto.SysUserDTO;
-import com.shawcxx.modules.sys.form.SysUserQueryForm;
+import cn.hutool.core.util.StrUtil;
+import com.shawcxx.modules.device.domain.DeviceDO;
+import com.shawcxx.modules.device.service.DeviceService;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
@@ -17,16 +15,17 @@ import javax.annotation.Resource;
 @SpringBootTest
 public class Test {
     @Resource
-    private SysUserDAO sysUserDAO;
+    private DeviceService deviceService;
 
     @org.junit.jupiter.api.Test
     public void test() {
-        SysUserQueryForm form = new SysUserQueryForm();
-        form.setDeptId(0l);
-        Page<SysUserDTO> sysUserDTOPage = sysUserDAO.userList(new Page(1, 10), form);
-        System.out.println(JSON.toJSONString(sysUserDTOPage));
-        form.setDeptId(null);
-        sysUserDTOPage = sysUserDAO.userList(new Page(1, 10), form);
-        System.out.println(JSON.toJSONString(sysUserDTOPage));
+        String s = "900";
+        for (int i = 0; i < 10000; i++) {
+            String p = StrUtil.padPre(i + "", 5, '0');
+            DeviceDO deviceDO = new DeviceDO();
+            deviceDO.setDeviceNo(s + p);
+            deviceDO.setStationId("1");
+            deviceDO.setDeviceType(2);
+        }
     }
 }

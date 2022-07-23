@@ -9,10 +9,12 @@
             <if test="form.deptName != null and form.deptName!=''">
                 AND dept_name like concat('%',#{form.deptName},'%')
             </if>
-            AND
-            <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
-                find_in_set(#{deptId},dept_tree)
-            </foreach>
+            <if test="form.deptList !=null and form.deptList.size()>0">
+                AND
+                <foreach collection="form.deptList" item="deptId" separator="OR" open="(" close=")">
+                    find_in_set(#{deptId},dept_tree)
+                </foreach>
+            </if>
         </where>
     </select>
 </mapper>

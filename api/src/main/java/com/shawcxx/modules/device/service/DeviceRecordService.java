@@ -136,8 +136,8 @@ public class DeviceRecordService {
         criteria.and("deviceTime").gte(DateUtil.parse(startTime)).lte(DateUtil.parse(endTime));
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(criteria),
-                Aggregation.sort(Sort.Direction.ASC, "deviceTime"),
-                Aggregation.group("deviceTime").sum("power").as("power")
+                Aggregation.group("deviceTime").sum("power").as("power"),
+                Aggregation.sort(Sort.Direction.ASC, "_id")
         );
         AggregationResults<JSONObject> results = mongoTemplate.aggregate(aggregation, DeviceRecordDO.class, JSONObject.class);
         if (CollUtil.isNotEmpty(results.getMappedResults())) {

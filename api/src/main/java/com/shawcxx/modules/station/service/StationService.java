@@ -80,6 +80,7 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
         StationDTO stationDTO = baseMapper.stationInfo(stationId);
         JSONObject energyStatistic = deviceEnergyStatisticService.stationEnergyStatistic(stationId);
         stationDTO.setEnergyStatistic(energyStatistic);
+        stationDTO.setPower(deviceRecordService.getStationLastPower(stationId));
         return stationDTO;
     }
 
@@ -103,6 +104,7 @@ public class StationService extends ServiceImpl<StationDAO, StationDO> {
             throw new MyException("业主账户不存在");
         }
         stationDO.setUserId(userDO.getUserId());
+        stationDO.setUpdateTime(DateUtil.date());
         this.save(stationDO);
         StationDTO stationDTO = new StationDTO();
         BeanUtil.copyProperties(stationDO, stationDTO);

@@ -14,7 +14,7 @@ import java.util.List;
 public class SysUserForm {
     private Long userId;
 
-    @Mobile
+    @Size(max = 100)
     private String username;
 
     /**

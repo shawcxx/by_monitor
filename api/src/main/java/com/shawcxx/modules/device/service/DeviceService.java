@@ -1,6 +1,7 @@
 package com.shawcxx.modules.device.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -105,7 +106,17 @@ public class DeviceService extends ServiceImpl<DeviceDAO, DeviceDO> {
     }
 
     public void deleteDevice(Long deviceId) {
-        this.removeById(deviceId);
+
+        DeviceDO deviceDO = this.getById(deviceId);
+        if (deviceDO != null) {
+            if (deviceDO.getDeviceType() == 2) {
+                List<DeviceDO> list = this.list(new LambdaQueryWrapper<DeviceDO>().eq(DeviceDO::getEmuId, deviceDO.getDeviceNo()));
+                if (CollUtil.isNotEmpty(list)) {
+                    throw new MyException("EMU下绑定了MI,请先删除MI");
+                }
+            }
+            this.removeById(deviceId);
+        }
     }
 
     public JSONObject getUserDevice() {
